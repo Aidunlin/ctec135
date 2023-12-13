@@ -1,0 +1,123 @@
+﻿@page
+@using System.Data.SqlClient;
+@model Theater_RP.Pages.ReservationModel
+@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width" />
+	<title>Reservation</title>
+	<!-- Specify CSS for the field element -->
+	<style>
+		fieldset {
+			width: 26em;
+		}
+	</style>
+</head>
+<body>
+	<h1>Reservation</h1>
+
+	@{
+		string message;
+		if (DateTime.Now <= DateTime.Parse("12:00 PM"))
+		{
+			message = "Good Morning";
+		}
+		else
+		{
+			message = "Good Afternoon";
+		}
+		<h3>@message, Aidan</h3>
+	}
+
+	<form method="post" action="/Confirmation">
+		<fieldset>
+			<!-- Dropdown list for performance -->
+			<label for="performance">Performance</label>
+			<select name="performance" id="performance">
+				<option hidden value="prompt">Select a performance</option>
+				<!-- Use the Read() method to read one row at a time -->
+				@{
+					SqlDataReader drPerformance = Model.PerformanceReader();
+					while (drPerformance.Read() == true)
+					{ // Get performance name & base price from current row
+						string performName = drPerformance["PerformanceName"].ToString();
+						string basePrice = drPerformance["BasePrice"].ToString();
+						// <option> element to add performance to dropdown list
+						<option value="@performName">@performName - $@basePrice</option>
+					}
+				}
+			</select>
+
+			<br />
+			<br />
+
+			<!-- Input field for performance date -->
+			<label for="performDate">Date:</label>
+			<input type="date" name="performDate" id="performDate" />
+
+			<br />
+			<br />
+
+			<!-- Radio buttons to select a zone -->
+			@{
+				SqlDataReader drZoneName = Model.ZoneNameReader();
+				while (drZoneName.Read() == true)
+				{
+					string? zoneName = drZoneName["ZoneName"].ToString();
+					if (zoneName != null)
+					{
+						zoneName = zoneName.Trim();
+						<input type="radio" name="zone" id="@zoneName" value="@zoneName" />
+						<label for="@zoneName">@zoneName</label>
+					}
+				}
+			}
+
+			<br />
+			<br />
+
+			<!-- Checkbox to specify the member status -->
+			<input type="checkbox" name="memberStatus" id="memberStatus" value="true" />
+			<label for="memberStatus">Are you a member?</label>
+
+			<br />
+			<br />
+
+			<!-- Input field to enter the number of snacks -->
+			<label for="snacks">Number of snacks</label>
+			<input type="number" name="snacks" id="snacks" min="0" step="1" value="0" />
+
+			<br />
+			<br />
+
+			<!-- Input field to enter the number of tickets -->
+			<label for="tickets">Number of tickets</label>
+			<input type="number" name="tickets" id="tickets" min="1" max="10" step="1" value="0" />
+
+			<br />
+			<br />
+
+			<!-- Button to submit the form -->
+			<button type="submit" id="submitBtn" name="submitBtn" value="continue">Continue</button>
+		</fieldset>
+	</form>
+
+	@if (Model.ReservationData?.Performance.Length > 0)
+	{
+		<script>
+			// Restore values of input fields
+			document.getElementById("performance").value = "@Model.ReservationData.Performance";
+			document.getElementById("performDate").value = "@Model.ReservationData.PerformDate.ToString("yyyy-MM-dd")";
+			document.getElementById("@Model.ReservationData.Zone").checked = true;
+			document.getElementById("memberStatus").checked = "@Model.ReservationData.MemberStatus" == "True";
+			document.getElementById("snacks").value = "@Model.ReservationData.Snacks";
+			document.getElementById("tickets").value = "@Model.ReservationData.Tickets";
+		</script>
+	}
+</body>
+</html>

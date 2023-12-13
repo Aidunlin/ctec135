@@ -1,0 +1,42 @@
+﻿/*
+Author: Aidan Linerud and Keziah Njoroge
+Date: 11/22/2023
+Assignment: Final Project
+*/
+
+/* Dark theme for dark mode users, light theme for light mode users! */
+* {
+	color-scheme: light dark;
+}
+
+html {
+    font-family: system-ui;
+    max-width: 40em;
+    margin: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    border-bottom: 1px solid currentColor;
+    padding: 0.5em;
+}
+
+td {
+    padding: 0.25em;
+}
+
+#action-buttons-div {
+    display: flex;
+    justify-content: space-between;
+    padding-block: 0.5em;
+}
+
+label {
+    display: block;
+    padding-block: 0.5em;
+}

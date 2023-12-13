@@ -1,0 +1,92 @@
+﻿@page
+@model AutoRental.Pages.ConfirmationModel
+@{
+	Layout = null;
+}
+
+<!--
+Author: Aidan Linerud and Keziah Njoroge
+Date: 11/18/2023
+Assignment: Final Project
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>Confirmation</title>
+	<link rel="stylesheet" href="~/css/project.css" asp-append-version="true" />
+</head>
+<body>
+	<h1>Confirm Auto Rental</h1>
+
+	<!-- Display form inputs back to user, as well as total cost -->
+	<table>
+		<!-- Inputs information -->
+		<tr>
+			<th colspan="2">Rental</th>
+		</tr>
+		<tr>
+			<td>Auto Type:</td>
+			<td>@Model.RentalsData.AutoType</td>
+		</tr>
+		<tr>
+			<td>Start Date:</td>
+			<td>@Model.RentalsData.StartDate.ToLongDateString()</td>
+		</tr>
+		<tr>
+			<td>Category:</td>
+			<td>@Model.RentalsData.Category</td>
+		</tr>
+		<tr>
+			<td>Insurance Status:</td>
+			@if (Model.RentalsData.InsuranceStatus)
+			{
+				<td>Insured</td>
+			}
+			else
+			{
+				<td>Not Insured</td>
+			}
+		</tr>
+		<tr>
+			<td>Days:</td>
+			<td>@Model.RentalsData.Days</td>
+		</tr>
+
+		<!-- Cost information -->
+		<tr>
+			<th colspan="2">Pricing</th>
+		</tr>
+		<tr>
+			<td>Daily Rate:</td>
+			<td>@Model.RentalsData.DailyRate().ToString("C")</td>
+		</tr>
+		<tr>
+			<td>Discount:</td>
+			@{
+				var discount = Model.RentalsData.Discount() * Model.RentalsData.DailyRate();
+				<td>@discount.ToString("C")</td>
+			}
+		</tr>
+		<tr>
+			<td>Insurance:</td>
+			<td>@Model.RentalsData.Insurance().ToString("C")</td>
+		</tr>
+		<tr>
+			<td>Cost Per Day:</td>
+			<td>@Model.RentalsData.CostPerDay().ToString("C")</td>
+		</tr>
+		<tr>
+			<td>Total Cost:</td>
+			<td>@Model.RentalsData.TotalCost().ToString("C")</td>
+		</tr>
+	</table>
+
+	<div id="action-buttons-div">
+		<button type="button">Confirm</button>
+		<a href="Reservation"><input type="button" value="Change" /></a>
+	</div>
+</body>
+
+</html>

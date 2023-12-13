@@ -1,0 +1,105 @@
+﻿@page
+@model Theater_RP.Pages.ConfirmationModel
+@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>Confirmation</title>
+	<style>
+		.output {
+			position: fixed;
+			left: 12em;
+		}
+	</style>
+</head>
+<body>
+	<h3>Confirmation</h3>
+
+	<!-- Display input data -->
+	Performance:
+	<span class="output">
+		@Model.ReservationData.Performance
+	</span>
+	<br />
+	Zone:
+	<span class="output">
+		@Model.ReservationData.Zone
+	</span>
+	<br />
+	Date:
+	<span class="output">
+		@Model.ReservationData.PerformDate.ToShortDateString()
+	</span>
+	<br />
+	Member status:
+	<span id="memberStatus" class="output">
+		@Model.ReservationData.MemberStatus
+	</span>
+	<br />
+
+	<script>
+		// Display member status as "Member" or "Non-member"
+		var status = "";
+		var memberStatus = "@Model.ReservationData.MemberStatus";
+		if (memberStatus == "True")
+			status = "Member";
+		else
+			status = "Non-member";
+		document.getElementById("memberStatus").innerHTML = status;
+	</script>
+
+	Tickets:
+	<span class="output">
+		@Model.ReservationData.Tickets.ToString()
+	</span>
+	<br />
+
+	Snacks:
+	<span class="output">
+		@Model.ReservationData.Snacks.ToString()
+	</span>
+	<br />
+
+	<br />
+
+	<!-- Display calculated prices -->
+	Base Price:
+	<span id="basePrice" class="output">
+		@Model.ReservationData.BasePrice().ToString("C")
+	</span>
+	<br />
+	Zone Price:
+	<span id="basePrice" class="output">
+		@Model.ReservationData.ZonePrice().ToString("C")
+	</span>
+	<br />
+	Discount:
+	<span id="basePrice" class="output">
+		@Model.ReservationData.Discount().ToString("C")
+	</span>
+	<br />
+	Snack Cost:
+	<span id="snackCost" class="output">
+		@Model.ReservationData.SnackCost().ToString("C")
+	</span>
+	<br />
+	Total Cost:
+	<span id="basePrice" class="output">
+		@Model.ReservationData.TotalCost().ToString("C")
+	</span>
+	<br />
+
+	<br />
+
+	<!-- Input options -->
+	<a href="Reservation">
+		<input type="button" value="Change Reservation" />
+	</a>
+	<br />
+	<button type="button">Confirm</button>
+</body>
+</html>

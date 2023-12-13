@@ -1,0 +1,115 @@
+﻿@page
+@model AutoRental.Pages.ReservationModel
+@{
+	Layout = null;
+
+	// These values are filled by going back from the confirmation page,
+	// otherwise filled with default values. Note that these are only used
+	// on page load, and don't change as the user edits form values.
+
+	string changeAutoType = Model.Rentals?.AutoType ?? "";
+	string changeStartDate = Model.Rentals?.StartDate.ToString("yyyy-MM-dd") ?? "";
+	string changeCategory = Model.Rentals?.Category ?? "";
+	bool changeInsuranceStatus = Model.Rentals?.InsuranceStatus ?? true;
+	int changeDays = Model.Rentals?.Days ?? 0;
+}
+@using System.Data.SqlClient;
+
+<!--
+Author: Aidan Linerud and Keziah Njoroge
+Date: 11/15/2023
+Assignment: Final Project
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>Auto Rental</title>
+	<link rel="stylesheet" href="~/css/project.css" asp-append-version="true" />
+</head>
+<body>
+	<h1>Auto Rental</h1>
+
+	<p>
+		@DateTime.Now.ToLongDateString() -
+
+		@if (DateTime.Now <= DateTime.Parse("12:00 PM"))
+		{
+			<span>Good Morning</span>
+		}
+		else
+		{
+			<span>Good Afternoon</span>
+		}
+	</p>
+
+	<form method="post" action="/Confirmation">
+		<!-- Dropdown field for auto type -->
+		<label>
+			Auto Type:
+			<select name="autoType" required>
+				<option hidden value="">Select an Auto type</option>
+				@{
+					SqlDataReader autoTypeReader = Model.AutoTypesReader();
+					while (autoTypeReader.Read() == true)
+					{
+						string autoType = autoTypeReader["AutoType"].ToString().Trim();
+						decimal dailyRate = (decimal)autoTypeReader["DailyRate"];
+
+						<option value="@autoType" selected=@(changeAutoType == autoType)>
+							@autoType - $@dailyRate
+						</option>
+					}
+				}
+			</select>
+		</label>
+
+		<!-- Input field for start date -->
+		<label>
+			Start Date:
+			<input type="date" name="startDate"
+				   min="@(DateTime.Now.ToString("yyyy-MM-dd"))"
+				   value="@changeStartDate" required>
+		</label>
+
+		<!-- Fields for category selection -->
+		<fieldset>
+			<legend>Discount Category:</legend>
+			@{
+				SqlDataReader discountReader = Model.DiscountReader();
+				while (discountReader.Read() == true)
+				{
+					string category = discountReader["Category"].ToString().Trim();
+					int discount = (int)discountReader["DiscountPercent"];
+
+					<label>
+						<input type="radio" name="category" value="@category"
+							   checked=@(changeCategory == category) required />
+						@category - @discount%
+					</label>
+				}
+			}
+		</fieldset>
+
+		<!-- Checkbox to specify the Insurance status -->
+		<label>
+			<input type="checkbox" name="insuranceStatus" value="true"
+				   checked=@(changeInsuranceStatus == true) />
+			Insurance?
+		</label>
+
+		<!-- Input field for number of days -->
+		<label>
+			Number of days:
+			<input type="number" name="days" min="1" max="10" step="1" value="@changeDays" />
+		</label>
+
+		<!-- Form action buttons -->
+		<div id="action-buttons-div">
+			<input type="submit" value="Select" />
+			<input type="reset" />
+		</div>
+	</form>
+</body>
+</html>
